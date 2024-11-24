@@ -4,12 +4,14 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import mongoose from "mongoose"
 
+import { connectDB } from "./db/connectDB.js"
+
+import authRoutes from "./api/auth/auth.routes.js"
 
 dotenv.config()
 
 const app = express()
-const port = process.env.PORT || 3030
-const databaseURL = process.env.DATABASE_URL
+const port = process.env.PORT || 5000
 
 const corsOptions = {
     origin:[process.env.ORIGIN],
@@ -21,11 +23,11 @@ app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use(express.json())
 
-const server = app.listen(port, () => {
+
+app.use("/api/auth", authRoutes)
+
+
+app.listen(port, () => {
+    connectDB()
     console.log(`server is running at http://localhost:${port}`);
-
 })
-
-mongoose.connect(databaseURL)
-    .then(() => console.log("DB Connection Successfully"))
-    .catch((err) => console.log("error msg: ", err.message))
