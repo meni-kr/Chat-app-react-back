@@ -1,15 +1,13 @@
 import { User } from "../../models/User.model.js"
-import bcrypt from "bcrypt"
+import bcrypt, { compare } from "bcrypt"
 import { generateTokenAndSetCookie, generateVerificationToken } from "../../services/utils.service.js"
 
 export async function signup(req, res) {
-    console.log('req.body: ',req.body);
-
     const { email, password, name } = req.body
 
     try {
         if (!email || !password || !name) {
-            throw new Error("All fields are required!")
+            return res.status(400).json({ success: false, message: "All fields are required!" })
         }
         const userAlreadyExists = await User.findOne({ email })
         if (userAlreadyExists) {
@@ -25,10 +23,11 @@ export async function signup(req, res) {
             verificationToken,
             verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
         })
+
         await user.save()
 
         generateTokenAndSetCookie(res, user._id)
-        console.log('user res:',user)
+
         res.status(201).json({
             success: true,
             message: "User created successfully",
@@ -39,12 +38,40 @@ export async function signup(req, res) {
         })
 
     } catch (error) {
-        res.status(404).json({ success: false, message: error.message })
+        res.status(500).json({ success: false, message: error.message })
     }
 }
 
-export const login = async (req, res) => {
-    res.send("login route")
+export async function login(req, res) {
+    const { email, password, name } = req.body
+
+    try {
+        if (!email || !password) {
+            throw new Error("All fields are required!")
+        }
+
+        const user = await User.findOne({ email })
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User dos not exists" })
+        }
+
+        const auth = await compare(password,user.password)
+        if(!auth){
+            return res.status(400).json({ success: false, message: "Password is incorrect!" })
+        }
+        generateTokenAndSetCookie(res, user._id)
+        res.status(200).json({
+            success: true,
+            message: "User login successfully",
+            user: {
+                ...user._doc,
+                password: null,
+            }
+        })
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message })
+    }
 }
 
 export const logout = async (req, res) => {
