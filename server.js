@@ -7,6 +7,7 @@ import mongoose from "mongoose"
 import { connectDB } from "./db/connectDB.js"
 
 import authRoutes from "./api/auth/auth.routes.js"
+import userRoutes from "./api/user/user.routes.js"
 
 dotenv.config()
 
@@ -25,9 +26,10 @@ app.use(express.json())
 
 
 app.use("/api/auth", authRoutes)
+app.use('/api/user', userRoutes)
 
 
 app.listen(port, () => {
     connectDB()
-    console.log(`server is running at http://localhost:${port}`);
+    console.log(`server is running at http://localhost:${port}`)
 })

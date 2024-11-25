@@ -3,10 +3,10 @@ import bcrypt, { compare } from "bcrypt"
 import { generateTokenAndSetCookie, generateVerificationToken } from "../../services/utils.service.js"
 
 export async function signup(req, res) {
-    const { email, password, name } = req.body
+    const { email, password, nickName } = req.body
 
     try {
-        if (!email || !password || !name) {
+        if (!email || !password || !nickName) {
             return res.status(400).json({ success: false, message: "All fields are required!" })
         }
         const userAlreadyExists = await User.findOne({ email })
@@ -19,7 +19,7 @@ export async function signup(req, res) {
         const user = new User({
             email,
             password: hashedPassword,
-            name,
+            nickName,
             verificationToken,
             verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
         })
@@ -43,7 +43,7 @@ export async function signup(req, res) {
 }
 
 export async function login(req, res) {
-    const { email, password, name } = req.body
+    const { email, password } = req.body
 
     try {
         if (!email || !password) {
