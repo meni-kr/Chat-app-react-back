@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Name is required"],
     },
-    fistName:{
+    firstName:{
         type: String,
         required: false,
     },
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    image: {
+    profileImage: {
         type: String,
         required: false,
     },

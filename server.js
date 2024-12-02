@@ -2,7 +2,6 @@ import express from "express"
 import dotenv from "dotenv"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import mongoose from "mongoose"
 
 import { connectDB } from "./db/connectDB.js"
 
@@ -21,12 +20,14 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 
+app.use("/uploads/profiles", express.static("uploads/profiles"))
+
 app.use(express.json())
 app.use(cookieParser())
 
 
 app.use("/api/auth", authRoutes)
-app.use('/api/user', userRoutes)
+app.use("/api/user", userRoutes)
 
 
 app.listen(port, () => {
