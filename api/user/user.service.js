@@ -55,6 +55,7 @@ try {
     }
     user.profileImage = null
     await user.save()
+    user.password = null
     return user
 
 } catch (error) {

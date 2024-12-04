@@ -17,8 +17,11 @@ export function generateTokenAndSetCookie(res, userId) {
             maxAge: 7 * 24 * 60 * 60 * 1000,
         })
 
-        return token
     } catch (error) {
         res.status(400).json({ success: false, message: error.message })
     }
+}
+
+export function clearCookie(res){
+    res.cookie("token","",{maxAge:1,secure:true,sameSite:"none"})
 }
