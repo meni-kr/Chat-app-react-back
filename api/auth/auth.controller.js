@@ -34,7 +34,7 @@ export async function login(req, res) {
     }
 }
 
-export async function logout(res){
+export async function logout(req,res){
     try {
         await authService.logOut(res)
         res.status(200).json({
