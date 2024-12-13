@@ -1,12 +1,14 @@
 import { User } from "../../models/User.model.js"
 import bcrypt, { compare } from "bcrypt"
+import jwt from "jsonwebtoken"
 import { clearCookie, generateTokenAndSetCookie } from "../../services/utils.service.js"
 
 
 export const authService = {
     signUp,
     login,
-    logOut
+    logOut,
+    validateToken
 }
 
 async function signUp(user, res) {
@@ -68,4 +70,20 @@ async function logOut(res) {
     } catch (error) {
         res.status(404).json({ success: false, message: error.message })
     }
+}
+
+function validateToken(token) {
+    try {
+       const json = jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
+            if (err) return ({ success: false, message: "Token is not valid" })
+            return payload.userId
+        })
+
+        const loggedInUser = JSON.parse(json)
+        return loggedInUser
+
+    } catch (err) {
+        console.log('Invalid login token')
+    }
+    return null
 }
