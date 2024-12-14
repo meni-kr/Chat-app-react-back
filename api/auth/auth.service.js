@@ -74,16 +74,15 @@ async function logOut(res) {
 
 function validateToken(token) {
     try {
-       const json = jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
-            if (err) return ({ success: false, message: "Token is not valid" })
-            return payload.userId
-        })
+        if (!token) return null
+        const json = jwt.verify(token, process.env.JWT_SECRET)
+  
+        const loggedInUser = json.userId
 
-        const loggedInUser = JSON.parse(json)
         return loggedInUser
 
     } catch (err) {
-        console.log('Invalid login token')
+        console.log('Invalid login token: ', err)
     }
-    return null
+    // return null
 }

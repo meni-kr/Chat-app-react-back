@@ -33,10 +33,10 @@ app.all('*', setupAsyncLocalStorage)
 app.use("/api/auth", authRoutes)
 app.use("/api/user", userRoutes)
 
-setupSocketAPI(server)
 
 
 server.listen(port, () => {
     connectDB()
+    setupSocketAPI(server)
     console.log(`server is running at http://localhost:${port}`)
 })
